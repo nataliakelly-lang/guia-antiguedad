@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía Rápida: Reconocimiento de Antigüedad</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; color: #1a1a1a; }
+
+  header { background: #f7faf8; padding: 24px 32px; text-align: center; border-bottom: 4px solid #F5E642; }
+  header img { height: 56px; width: auto; margin-bottom: 10px; }
+  header h1 { font-size: 1.2rem; font-weight: 600; color: #1B4D3E; margin-top: 4px; }
+  header p { margin-top: 4px; font-size: 0.85rem; color: #5a7a6e; }
+
+  nav { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; background: #1B4D3E; padding: 12px 20px; border-top: 1px solid rgba(255,255,255,0.15); }
+  nav button { background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.3); color: white; padding: 7px 16px; border-radius: 20px; cursor: pointer; font-size: 0.82rem; font-weight: 500; transition: all 0.2s; }
+  nav button:hover, nav button.active { background: #F5E642; color: #1B4D3E; border-color: #F5E642; font-weight: 700; }
+
+  main { max-width: 900px; margin: 24px auto; padding: 0 16px 40px; }
+  section { display: none; }
+  section.active { display: block; }
+
+  .card { background: white; border-radius: 12px; padding: 22px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); border-top: 4px solid #F5E642; }
+  .card h2 { font-size: 1.1rem; color: #1B4D3E; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .card h3 { font-size: 0.95rem; color: #1B4D3E; margin: 16px 0 8px; font-weight: 700; }
+  .card p, .card li { font-size: 0.9rem; line-height: 1.7; color: #2d3748; }
+  ul { padding-left: 20px; }
+  li { margin-bottom: 5px; }
+
+  .alert { border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-size: 0.88rem; display: flex; gap: 10px; align-items: flex-start; }
+  .alert.danger  { background: #fff0f0; border-left: 4px solid #c0392b; color: #6b1a1a; }
+  .alert.warning { background: #fffde7; border-left: 4px solid #F5E642; color: #5a4a00; }
+  .alert.success { background: #f1fdf3; border-left: 4px solid #2E7D32; color: #1b4d20; }
+  .alert.info    { background: #f4fdf5; border-left: 4px solid #5CB85C; color: #2E7D32; }
+  .alert-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+  .timeline { border-left: 3px solid #c8e6c9; padding-left: 20px; margin: 12px 0; }
+  .timeline-item { position: relative; margin-bottom: 16px; }
+  .timeline-item::before { content: ''; width: 12px; height: 12px; background: #2E7D32; border-radius: 50%; position: absolute; left: -27px; top: 4px; }
+  .timeline-item .label { font-weight: 700; font-size: 0.88rem; color: #2E7D32; }
+  .timeline-item p { font-size: 0.86rem; color: #4a5568; margin-top: 2px; }
+
+  .doc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 12px; }
+  .doc-card { border: 1.5px solid #c8e6c9; border-radius: 10px; padding: 14px; background: #f9fdf9; }
+  .doc-card h3 { font-size: 0.86rem; font-weight: 700; color: #2E7D32; margin: 0 0 8px; }
+  .doc-card ul { font-size: 0.83rem; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.86rem; margin-top: 10px; }
+  th { background: #2E7D32; color: white; padding: 9px 13px; text-align: left; }
+  td { padding: 9px 13px; border-bottom: 1px solid #e8f5e9; vertical-align: top; }
+  tr:nth-child(even) td { background: #f9fdf9; }
+
+  .case-table td:first-child { font-weight: 600; color: #2E7D32; width: 38%; }
+
+  .example-box { background: #f9fdf9; border: 1.5px dashed #5CB85C; border-radius: 10px; padding: 16px; margin: 12px 0; }
+  .example-box.bad { border-color: #c0392b; background: #fff5f5; }
+  .example-box h3 { font-size: 0.9rem; font-weight: 700; color: #2E7D32; margin-bottom: 8px; }
+  .example-box.bad h3 { color: #c0392b; }
+  .example-box p, .example-box li { font-size: 0.86rem; color: #2d3748; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 10px; }
+  @media(max-width: 560px) { .two-col { grid-template-columns: 1fr; } }
+
+  .compare-box { border-radius: 10px; padding: 14px; font-size: 0.86rem; }
+  .compare-ok  { background: #f1fdf3; border: 1.5px solid #5CB85C; }
+  .compare-no  { background: #fff5f5; border: 1.5px solid #e53e3e; }
+  .compare-box h4 { font-size: 0.88rem; font-weight: 700; margin-bottom: 8px; }
+  .compare-ok h4 { color: #2E7D32; }
+  .compare-no h4 { color: #c0392b; }
+
+  .hl { background: #F5E642; padding: 1px 5px; border-radius: 4px; font-weight: 700; color: #1a1a1a; }
+
+  .calc-box { background: #f9fdf9; border: 2px solid #5CB85C; border-radius: 12px; padding: 20px; margin-top: 10px; }
+  .calc-box h3 { font-size: 1rem; font-weight: 700; color: #2E7D32; margin-bottom: 14px; }
+  .calc-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .calc-row label { font-size: 0.88rem; font-weight: 600; color: #2E7D32; }
+  .calc-row input[type="date"] { padding: 8px 12px; border: 1.5px solid #5CB85C; border-radius: 8px; font-size: 0.88rem; outline: none; }
+  .calc-btn { background: #2E7D32; color: white; border: none; padding: 9px 20px; border-radius: 8px; font-size: 0.88rem; font-weight: 700; cursor: pointer; }
+  .calc-btn:hover { background: #1b5e20; }
+  .calc-result { display: none; border-radius: 10px; padding: 14px; margin-top: 8px; font-size: 0.9rem; }
+  .calc-result.ok   { background: #f1fdf3; border-left: 4px solid #2E7D32; color: #1b4d20; }
+  .calc-result.warn { background: #fffde7; border-left: 4px solid #F5E642; color: #5a4a00; }
+  .calc-result.no   { background: #fff0f0; border-left: 4px solid #c0392b; color: #6b1a1a; }
+  .calc-result p { margin-bottom: 5px; }
+
+  .pill { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 12px; margin-left: 4px; vertical-align: middle; }
+  .pill.ok { background: #2E7D32; color: white; }
+  .pill.no { background: #c0392b; color: white; }
+
+  footer { background: #2E7D32; color: #c8e6c9; text-align: center; padding: 14px; font-size: 0.8rem; }
+  footer span { color: #F5E642; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<header>
+  <img id="koltin-logo" src="koltin_logo color_vf.png" alt="KOLTIN" style="height:56px;width:auto;" onerror="this.style.display='none';document.getElementById('koltin-txt').style.display='block'">
+  <div id="koltin-txt" style="display:none;font-size:2rem;font-weight:900;letter-spacing:3px;color:#1B4D3E;">KOLTIN</div>
+  <h1>Guía Rápida: Reconocimiento de Antigüedad</h1>
+</header>
+
+<nav>
+  <button class="active" onclick="show('periodo',this)">⏱ Periodo de Gracia</button>
+  <button onclick="show('casos',this)">📋 Casos y Documentos</button>
+  <button onclick="show('poliza',this)">📃 Póliza</button>
+  <button onclick="show('comprobante',this)">💸 Comprobante de Pago</button>
+  <button onclick="show('fechaantig',this)">🕰️ Fecha de Antigüedad</button>
+  <button onclick="show('vinculo',this)">🏭 Vínculo Cliente-Empresa</button>
+  <button onclick="show('pagos',this)">💳 Pagos Retroactivos</button>
+  <button onclick="show('checklist',this)">✅ Checklist</button>
+</nav>
+
+<main>
+
+<!-- ===================== PERIODO DE GRACIA ===================== -->
+<section id="periodo" class="active">
+  <div class="card">
+    <h2>⏱ ¿Qué es la Antigüedad y el Periodo de Gracia?</h2>
+    <p>La <strong>antigüedad</strong> es el tiempo continuo que una persona ha estado asegurada en una aseguradora de salud previa. En Koltin (BBVA Seguros) sirve para <strong>eliminar periodos de espera</strong> y conservar beneficios adquiridos.</p>
+    <div class="alert info">
+      <span class="alert-icon">ℹ️</span>
+      <span><strong>Regla clave:</strong> Si la póliza está vencida, hay <span class="hl">27 días naturales</span> (incluyendo fines de semana y festivos) desde el vencimiento para respetar la antigüedad.</span>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="label">Día 0 — Vencimiento de la póliza</div>
+        <p>La póliza expira. Inicia el periodo de gracia.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="label">Días 1 a 27 — Periodo de gracia activo ✅</div>
+        <p>La antigüedad <strong>sí se puede respetar</strong>. El cliente puede renovar y conservar su historial.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="label">Día 28 en adelante — Antigüedad expirada ❌</div>
+        <p><strong>No se puede respetar la antigüedad.</strong> El cliente inicia con periodos de espera.</p>
+      </div>
+    </div>
+    <div class="alert danger">
+      <span class="alert-icon">🚨</span>
+      <span><strong>Error frecuente:</strong> Reconocer antigüedad después del día 27. Esto ha generado reembolsos. Siempre verifica la fecha antes de proceder.</span>
+    </div>
+
+    <div class="calc-box">
+      <h3>🗓️ Calculadora de Periodo de Gracia</h3>
+      <div class="calc-row">
+        <label>Fecha de vencimiento de la póliza:</label>
+        <input type="date" id="fechaVenc">
+        <button class="calc-btn" onclick="calcularGracia()">Calcular</button>
+      </div>
+      <div class="calc-result" id="calcResult"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CASOS Y DOCUMENTOS ===================== -->
+<section id="casos">
+  <div class="card">
+    <h2>📋 Documentos por Caso</h2>
+    <p>Identifica el caso del cliente y solicita los documentos correspondientes:</p>
+    <table class="case-table">
+      <thead><tr><th>Caso</th><th>Documentos requeridos</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Póliza personal <strong>vigente</strong></td>
+          <td>
+            ✅ Póliza vigente (todas las hojas)<br>
+            ✅ Comprobante de pago (factura de pago emitida por aseguradora + comprobante del banco)
+          </td>
+        </tr>
+        <tr>
+          <td>Póliza personal <strong>vencida dentro del periodo de gracia</strong> (≤27 días)</td>
+          <td>
+            ✅ Carátula de antigüedad<br>
+            ✅ Póliza vigente<br>
+            ✅ Comprobante de pago (factura + comprobante del banco)
+          </td>
+        </tr>
+        <tr>
+          <td>Póliza grupal <strong>vigente</strong> con carta de antigüedad</td>
+          <td>
+            ✅ Comprobante de pago<br>
+            ✅ Póliza vigente<br>
+            ✅ Documento que vincule al asegurado con la empresa (recibo de nómina o carta, emisión ≤30 días)
+          </td>
+        </tr>
+        <tr>
+          <td>Póliza grupal <strong>vencida</strong> con carta de antigüedad</td>
+          <td>
+            ✅ Carta de antigüedad<br>
+            ✅ Carátula de póliza o comprobante de pago<br>
+            ✅ Documento de vínculo laboral (emisión ≤30 días)
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>🔍 Qué revisar para validar una antigüedad</h2>
+    <table>
+      <thead><tr><th>Categoría</th><th>Qué validar</th><th>Causas de rechazo</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Nombre completo</strong></td>
+          <td>Debe coincidir al 100% con la identificación oficial. No se aceptan abreviaciones ni apellidos cortados.</td>
+          <td>Si no coincide → solicitar <strong>carta aclaratoria</strong> (≤30 días de emisión).</td>
+        </tr>
+        <tr>
+          <td><strong>Fecha de vigencia</strong></td>
+          <td>La póliza debe estar vigente o dentro del periodo de gracia (≤27 días naturales).</td>
+          <td>No se aceptan pólizas de años anteriores que excedan el periodo de gracia.</td>
+        </tr>
+        <tr>
+          <td><strong>Monto del comprobante</strong></td>
+          <td>Debe coincidir con el monto en la póliza. En pagos diferidos puede haber pequeñas variaciones.</td>
+          <td>Si no coincide → solicitar factura de ingreso o aviso de pago.</td>
+        </tr>
+        <tr>
+          <td><strong>Pagos a MSIs</strong></td>
+          <td>Se debe adjuntar el estado de cuenta del <strong>último pago</strong> (ej. pago 3/3, 6/6, 12/12).</td>
+          <td>BBVA no acepta solo el primer estado de cuenta donde se difirió.</td>
+        </tr>
+        <tr>
+          <td><strong>Fecha de antigüedad</strong></td>
+          <td>Debe observarse de forma <u>explícita</u> en la carátula de la póliza o en un endoso de antigüedad.</td>
+          <td>No se acepta la fecha de la tarjeta digital de la aseguradora. No se aceptan endosos de otras pólizas.</td>
+        </tr>
+        <tr>
+          <td><strong>Vigencia de cartas</strong></td>
+          <td>Las cartas de antigüedad o vínculo laboral deben tener fecha de emisión ≤30 días.</td>
+          <td>Cartas con más de 30 días de emisión no son válidas.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ===================== PÓLIZA ===================== -->
+<section id="poliza">
+  <div class="card">
+    <h2>📃 Lineamientos para la Póliza</h2>
+    <ul>
+      <li>Se deben compartir <strong>TODAS las hojas</strong> de la póliza.</li>
+      <li>Debe enviarse en <strong>PDF o escaneada</strong> — NO fotos, NO capturas de pantalla.</li>
+      <li>Debe estar vigente o dentro de los <strong>27 días naturales</strong> consecutivos al vencimiento.</li>
+    </ul>
+    <div class="alert danger">
+      <span class="alert-icon">🚫</span>
+      <span>No se aceptan: fotos, capturas de pantalla, documentos movidos o cortados, ni documentos donde no se vea el monto de la prima total.</span>
+    </div>
+
+    <h3>⚠️ Caso especial: Pólizas Banorte</h3>
+    <p>Banorte divide la información de <strong>endosos + prima total</strong> en documentos separados. Si el cliente tiene póliza Banorte, se requieren <strong>dos documentos</strong>:</p>
+    <div class="two-col" style="margin-top:10px;">
+      <div class="compare-ok"><h4>Documento 1</h4><p>Carátula de póliza con prima total.</p></div>
+      <div class="compare-ok"><h4>Documento 2</h4><p>Póliza con endoso de antigüedad (generalmente página 7).</p></div>
+    </div>
+    <div class="alert warning">
+      <span class="alert-icon">⚠️</span>
+      <span>Si el cliente no tiene el endoso de antigüedad, se puede aprobar <strong>solo si el cliente acepta</strong> que la fecha de antigüedad será la "Fecha de Emisión".</span>
+    </div>
+
+    <h3>🌎 Pólizas extranjeras</h3>
+    <p>BBVA solo reconoce antigüedades de aseguradoras extranjeras que tengan registro en la CONDUSEF: <strong>registros.condusef.gob.mx/recas/</strong></p>
+    <div class="alert danger">
+      <span class="alert-icon">🚫</span>
+      <span><strong>Ejemplo de aseguradora NO reconocida:</strong> Best Doctors Insurance.</span>
+    </div>
+
+    <h3>📛 Discrepancia en el nombre</h3>
+    <p>Si el nombre en la póliza no coincide con la identificación oficial (por nombre de casada vs. soltera, error de ortografía, etc.), se debe solicitar una <strong>carta aclaratoria</strong> con fecha de emisión no mayor a 30 días.</p>
+    <div class="alert danger">
+      <span class="alert-icon">🚨</span>
+      <span>La discrepancia de nombre podría causar que BBVA niegue el servicio ante un siniestro, ya que legalmente no serían la misma persona.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== COMPROBANTE DE PAGO ===================== -->
+<section id="comprobante">
+  <div class="card">
+    <h2>💸 Comprobantes de Pago</h2>
+    <p>El comprobante de pago idealmente tiene <strong>dos partes</strong>: el recibo emitido por la aseguradora + el comprobante del banco.</p>
+
+    <h3>✅ Comprobantes 100% aceptados por BBVA</h3>
+    <div class="doc-grid">
+      <div class="doc-card">
+        <h3>1. Factura de Pago</h3>
+        <p>Debe decir <strong>"PAGO"</strong> (no "INGRESO"). Confirma que el pago ya fue realizado.</p>
+      </div>
+      <div class="doc-card">
+        <h3>2. Estado de Cuenta</h3>
+        <p>Completo o solo la página del cobro. Debe mostrar nombre del cliente y fecha del cargo. <strong>No capturas de pantalla.</strong></p>
+      </div>
+      <div class="doc-card">
+        <h3>3. Comprobante SPEI / Transferencia</h3>
+        <p>Comprobante oficial del banco, no captura de pantalla de la app.</p>
+      </div>
+    </div>
+
+    <h3>⚠️ Factura de Ingreso vs. Factura de Pago</h3>
+    <div class="two-col">
+      <div class="compare-no">
+        <h4>❌ Factura de Ingreso (RECHAZADA)</h4>
+        <ul>
+          <li>También llamada factura de venta.</li>
+          <li>Es una <strong>solicitud de pago</strong>, no una confirmación.</li>
+          <li>Dice: <em>"Esto es lo que me debes"</em>.</li>
+          <li>No prueba que ya se pagó.</li>
+        </ul>
+      </div>
+      <div class="compare-ok">
+        <h4>✅ Factura de Pago (ACEPTADA)</h4>
+        <ul>
+          <li>También llamada comprobante de egreso.</li>
+          <li>Es una <strong>prueba de pago realizado</strong>.</li>
+          <li>Dice: <em>"Esto ya se pagó"</em>.</li>
+          <li>Refleja una salida de dinero real.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>❌ Documentos NO válidos</h3>
+    <ul>
+      <li>Capturas de pantalla de transferencia desde el celular o correo.</li>
+      <li>Documentos ilegibles, borrosos o cortados.</li>
+      <li>Pagarés (son promesas de pago, no confirmaciones).</li>
+      <li>Correos o pantallas que digan "Transacción en proceso" o "Este documento no es válido como comprobante".</li>
+      <li>Tickets donde el destinatario no sea claramente la aseguradora (ej. "Pago de servicios").</li>
+      <li>Para pólizas colectivas: tickets emitidos a nombre de la empresa, no a la aseguradora.</li>
+    </ul>
+
+    <h3>📅 Pagos diferidos a MSIs</h3>
+    <div class="alert warning">
+      <span class="alert-icon">⚠️</span>
+      <span>Si la póliza se pagó a meses sin intereses, se debe adjuntar el estado de cuenta del <strong>último pago liquidado</strong> (ej. 6/6, 12/12). BBVA no acepta el primer estado de cuenta donde se difirió.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FECHA DE ANTIGÜEDAD ===================== -->
+<section id="fechaantig">
+  <div class="card">
+    <h2>🕰️ ¿Dónde está la Fecha de Antigüedad?</h2>
+    <p>Generalmente aparece en la <strong>carátula de la póliza</strong>, pero en algunas aseguradoras se encuentra en otras páginas. Aquí los casos especiales:</p>
+
+    <table>
+      <thead><tr><th>Aseguradora</th><th>¿Dónde está la fecha de antigüedad?</th></tr></thead>
+      <tbody>
+        <tr><td><strong>MAPFRE</strong></td><td>En anexos, generalmente páginas 6-7.</td></tr>
+        <tr><td><strong>AXXA</strong></td><td>La antigüedad <em>nacional</em> aparece en la <strong>segunda página</strong>. La de la carátula es solo la antigüedad con AXXA, no la nacional.</td></tr>
+        <tr><td><strong>Metlife</strong></td><td>No aparece en la carátula. Se debe solicitar <strong>carta de antigüedad</strong> o buscar en el endoso de reconocimiento de antigüedad. La tarjeta digital NO es válida.</td></tr>
+        <tr><td><strong>Seguros Atlas</strong></td><td>No aparece en la carátula. Se debe solicitar <strong>endoso y/o carta de antigüedad</strong>.</td></tr>
+        <tr><td><strong>Seguros BBVA</strong></td><td>No aparece en la carátula del titular. Se requiere <strong>carta de antigüedad</strong>.</td></tr>
+        <tr><td><strong>BUPA</strong></td><td>Se puede tomar la <strong>fecha de primera emisión</strong> como fecha de antigüedad.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="alert danger">
+      <span class="alert-icon">🚫</span>
+      <span>La fecha de la <strong>tarjeta digital del asegurado</strong> NO es válida. Se requiere la carátula de la póliza, endoso o carta de antigüedad.</span>
+    </div>
+
+    <h3>⚠️ Constancia de Asegurabilidad ≠ Carta de Antigüedad</h3>
+    <div class="two-col">
+      <div class="compare-no">
+        <h4>❌ Constancia de Asegurabilidad</h4>
+        <p>Confirma que la persona <strong>está actualmente asegurada</strong>. No acredita desde cuándo tiene seguro. No sirve para validar antigüedad.</p>
+      </div>
+      <div class="compare-ok">
+        <h4>✅ Carta de Antigüedad</h4>
+        <p>Acredita <strong>desde cuándo</strong> ha estado asegurada la persona y los periodos continuos. Esta es la que necesitamos para que no apliquen periodos de espera.</p>
+      </div>
+    </div>
+    <div class="alert warning">
+      <span class="alert-icon">⚠️</span>
+      <span>Algunas aseguradoras se resisten a emitir cartas de antigüedad porque saben que el cliente se está cambiando. Si el cliente enfrenta esto, muéstrale que <strong>todas las aseguradoras las emiten</strong>: Metlife, Inbursa, AXXA, MAPFRE, Seguros Atlas, Banorte, etc.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== VÍNCULO CLIENTE-EMPRESA ===================== -->
+<section id="vinculo">
+  <div class="card">
+    <h2>🏭 Documento que Vincule Cliente-Empresa</h2>
+    <p>Para pólizas grupales o colectivas, se necesita un documento que acredite la relación del asegurado con la empresa. Su emisión debe ser <strong>menor a 30 días</strong>.</p>
+
+    <h3>✅ Documentos válidos</h3>
+    <ul>
+      <li><strong>Recibo de nómina</strong> (con emisión ≤30 días)</li>
+      <li><strong>Carta de la empresa</strong> donde se vincule al asegurado</li>
+      <li><strong>Credencial de la empresa</strong></li>
+      <li>Si el cliente no tiene ninguno de los anteriores: puede elaborar una <strong>carta propia</strong> describiendo su vínculo con la empresa.</li>
+    </ul>
+
+    <h3>Ejemplos de cartas válidas</h3>
+    <div class="example-box">
+      <h3>✅ Carta de empleado activo</h3>
+      <p>Carta firmada por el empleado o la empresa describiendo la relación laboral con la empresa titular de la póliza colectiva.</p>
+    </div>
+    <div class="example-box">
+      <h3>✅ Carta de jubilado</h3>
+      <p>Carta que acredita que el asegurado fue parte de la empresa y se jubiló, conservando el beneficio del seguro colectivo.</p>
+    </div>
+    <div class="example-box">
+      <h3>✅ Carta para pólizas colectivas (ej. Suprema Corte)</h3>
+      <p>Ejemplo: <em>"Por medio de la presente, yo [NOMBRE] hago constar que fui parte de la póliza colectiva [XXX] como prestación otorgada a mi hijo/esposo/pariente que trabajó desde [FECHA] con el título de [PUESTO] hasta el [FECHA]..."</em></p>
+    </div>
+
+    <div class="alert danger">
+      <span class="alert-icon">🚫</span>
+      <span><strong>NO válido:</strong> Una carta enviada por correo electrónico sin firma ni membrete oficial. Se necesita documento formal.</span>
+    </div>
+
+    <div class="alert warning">
+      <span class="alert-icon">⚠️</span>
+      <span>Para pólizas colectivas como la de la Suprema Corte: los tickets o facturas del pago emitidos a nombre de la empresa (no a la aseguradora) <strong>no son válidos</strong>. Se requiere carta de antigüedad + documento de vínculo.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PAGOS RETROACTIVOS ===================== -->
+<section id="pagos">
+  <div class="card">
+    <h2>💳 Cómo Funcionan los Pagos Retroactivos</h2>
+    <p>Cuando la antigüedad está vencida pero dentro del periodo de gracia, el pago cubre desde la <strong>fecha de vencimiento original</strong>, no desde el día en que paga el cliente.</p>
+    <div class="alert info">
+      <span class="alert-icon">📌</span>
+      <span>El siguiente cobro siempre se programa a partir de la <strong>fecha de vencimiento original</strong>, independientemente de cuándo realizó el pago.</span>
+    </div>
+    <table>
+      <thead><tr><th>Tipo de contrato</th><th>Cobertura del pago retroactivo</th><th>Próximo cobro</th></tr></thead>
+      <tbody>
+        <tr><td>Mensual</td><td>Vencimiento → +1 mes</td><td>A 1 mes del vencimiento</td></tr>
+        <tr><td>Trimestral</td><td>Vencimiento → +3 meses</td><td>A 3 meses del vencimiento</td></tr>
+        <tr><td>Semestral</td><td>Vencimiento → +6 meses</td><td>A 6 meses del vencimiento</td></tr>
+        <tr><td>Anual</td><td>Vencimiento → +12 meses</td><td>A 12 meses del vencimiento</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Ejemplos</h3>
+    <div class="example-box">
+      <h3>🟢 Pago mensual — vence 28 feb, paga 5 mar (día 5 ✅)</h3>
+      <ul>
+        <li>Cobertura: 28 feb → 28 mar</li>
+        <li>Próximo cobro: 28 de marzo</li>
+      </ul>
+    </div>
+    <div class="example-box">
+      <h3>🟢 Pago trimestral — vence 28 feb, paga 10 mar (día 10 ✅)</h3>
+      <ul>
+        <li>Cobertura: 28 feb → 28 may</li>
+        <li>Próximo cobro: 28 de mayo</li>
+      </ul>
+    </div>
+    <div class="example-box bad">
+      <h3>🔴 Pago cualquier periodicidad — vence 1 ene, quiere pagar 5 feb (día 35 ❌)</h3>
+      <ul>
+        <li>Fuera del periodo de gracia.</li>
+              <li><strong>No se puede respetar la antigüedad.</strong> El lead/gran persona inicia con periodos de espera.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CHECKLIST ===================== -->
+<section id="checklist">
+  <div class="card">
+    <h2>✅ Checklist Completo Antes de Validar Antigüedad</h2>
+
+    <h3>1. Periodo de gracia</h3>
+    <ul>
+      <li>☐ ¿La póliza venció hace <span class="hl">27 días naturales o menos</span>? Si no → No procede la antigüedad.</li>
+    </ul>
+
+    <h3>2. Póliza</h3>
+    <ul>
+      <li>☐ ¿Están todas las hojas de la póliza?</li>
+      <li>☐ ¿Está en PDF o escaneada (no foto ni captura)?</li>
+      <li>☐ ¿Se observa la vigencia claramente?</li>
+      <li>☐ ¿El nombre coincide al 100% con la identificación? Si no → Solicitar carta aclaratoria (≤30 días).</li>
+      <li>☐ Si es Banorte → ¿Tienes carátula + endoso de antigüedad?</li>
+      <li>☐ Si es aseguradora extranjera → ¿Está registrada en CONDUSEF?</li>
+    </ul>
+
+    <h3>3. Fecha de antigüedad</h3>
+    <ul>
+      <li>☐ ¿La fecha de antigüedad aparece explícita en la póliza o en un endoso?</li>
+      <li>☐ Si es MAPFRE → ¿Revisaste las páginas 6-7?</li>
+      <li>☐ Si es AXXA → ¿Tomaste la antigüedad nacional (pág. 2), no la de la carátula?</li>
+      <li>☐ Si es Metlife, Atlas o BBVA Seguros → ¿Tienes carta de antigüedad?</li>
+      <li>☐ ¿Es una carta de antigüedad (no una constancia de asegurabilidad)?</li>
+      <li>☐ ¿La carta tiene fecha de emisión ≤30 días?</li>
+    </ul>
+
+    <h3>4. Comprobante de pago</h3>
+    <ul>
+      <li>☐ ¿Es una factura de <strong>pago</strong> (no de ingreso), estado de cuenta o comprobante SPEI?</li>
+      <li>☐ ¿El monto coincide con el de la póliza?</li>
+      <li>☐ ¿El documento está completo, legible y no es una captura de pantalla?</li>
+      <li>☐ Si pagó a MSIs → ¿Tienes el estado de cuenta del <strong>último pago</strong> (ej. 6/6)?</li>
+    </ul>
+
+    <h3>5. Vínculo cliente-empresa (solo pólizas grupales)</h3>
+    <ul>
+      <li>☐ ¿Tienes recibo de nómina, carta de empresa o credencial?</li>
+      <li>☐ ¿La fecha de emisión del documento es ≤30 días?</li>
+    </ul>
+
+    <h3>6. Pago retroactivo (si aplica)</h3>
+    <ul>
+      <li>☐ ¿El pago cubre desde la <strong>fecha de vencimiento original</strong>?</li>
+      <li>☐ ¿El próximo cobro está programado desde la fecha de vencimiento original?</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer><span>KOLTIN</span> · Guía interna de capacitación</footer>
+
+<script>
+  function show(id, btn) {
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function calcularGracia() {
+    const input = document.getElementById('fechaVenc').value;
+    if (!input) { alert('Por favor selecciona una fecha de vencimiento.'); return; }
+    const venc = new Date(input + 'T00:00:00');
+    const hoy = new Date(); hoy.setHours(0,0,0,0);
+    const limite = new Date(venc); limite.setDate(limite.getDate() + 27);
+    const diasTranscurridos = Math.floor((hoy - venc) / 86400000);
+    const diasRestantes = 27 - diasTranscurridos;
+    const fmt = d => d.toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
+    const res = document.getElementById('calcResult');
+    res.style.display = 'block';
+    if (diasTranscurridos < 0) {
+      res.className = 'calc-result ok';
+      res.innerHTML = `<p>✅ <strong>La póliza aún está vigente.</strong></p>
+        <p>Vence el <strong>${fmt(venc)}</strong>. El periodo de gracia no ha iniciado.</p>
+        <p>Último día válido si vence: <strong>${fmt(limite)}</strong></p>`;
+    } else if (diasTranscurridos <= 27) {
+      const cls = diasRestantes <= 5 ? 'warn' : 'ok';
+      res.className = `calc-result ${cls}`;
+      res.innerHTML = `<p>${diasRestantes <= 5 ? '⚠️' : '✅'} <strong>Dentro del periodo de gracia.</strong></p>
+        <p>Días transcurridos: <strong>${diasTranscurridos}</strong> | Días restantes: <strong>${diasRestantes}</strong></p>
+        <p>Último día válido: <strong>${fmt(limite)}</strong></p>
+        ${diasRestantes <= 5 ? '<p>⚠️ <strong>¡Quedan muy pocos días! Actúa de inmediato.</strong></p>' : ''}`;
+    } else {
+      res.className = 'calc-result no';
+      res.innerHTML = `<p>🚨 <strong>Antigüedad expirada.</strong></p>
+        <p>Han transcurrido <strong>${diasTranscurridos} días</strong>. El periodo de gracia venció el <strong>${fmt(limite)}</strong>.</p>
+        <p><strong>No se puede respetar la antigüedad.</strong> El cliente inicia con periodos de espera.</p>`;
+    }
+  }
+</script>
+</body>
+</html>
